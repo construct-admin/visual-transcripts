@@ -2,9 +2,9 @@ import streamlit as st
 import cv2
 import tempfile
 import os
-from src.api_calls import analyze_image_Azure_Vision_Analysis, analyze_image_gpt4  # Your custom function to call the API
-from utils.initialise_LLM_models import Azure_Vision_analyse_dict
-from utils.utilities import get_frame_timestamp, image_to_base64, insert_VT_into_AT
+from visual_transcription.src.api_calls import analyze_image_Azure_Vision_Analysis, analyze_image_gpt4  # Your custom function to call the API
+from visual_transcription.utils.initialise_LLM_models import Azure_Vision_analyse_dict
+from visual_transcription.utils.utilities import get_frame_timestamp, image_to_base64, insert_VT_into_AT
 import json
 
 # -----------------------------------------------
@@ -16,7 +16,7 @@ if "Azure Vision Add Captions" not in st.session_state:
 
 
 if "gpt-4o" not in st.session_state:
-    with open(r"C:\Users\sJohnson\OneDrive - onlineeducationservices\repos\CONSTRUCT\select_images_from_vid_for_visual_transcription\utils\chat_GPT.json", "r") as json_file:
+    with open(r"visual_transcription\utils\chat_GPT.json", "r") as json_file:
         gpt4o_into = json.load(json_file)
         st.session_state['gpt-4o'] = {"prompt": gpt4o_into["prompt"], "max_words": gpt4o_into["max_words"]}
         st.session_state['gpt-4o']["prompt"] = st.session_state['gpt-4o']["prompt"].replace("%MAX_WORDS%", gpt4o_into["max_words"])
@@ -216,6 +216,12 @@ with st.sidebar:
                     response = analyze_image_gpt4(frame_info['frame'], st.session_state["gpt-4o"]["prompt"])
                     choices = response["choices"]
                     message = choices[0]["message"]["content"]
+
+                # elif st.session_state['selected_model'] == "new model":
+                #     response = MODEL_FUNCTION(INPUTS)
+                #     choices = response["choices"]
+                #     message = choices[0]["message"]["content"]
+
                 else:
                     raise ValueError("Invalid model selected")
 
